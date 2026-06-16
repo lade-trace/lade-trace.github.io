@@ -3,381 +3,223 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Marcus · facework</title>
+<title>Marcus · facework v2</title>
 <style>
-:root{
-  --bg:#0f1115;--surface:#171a21;--border:#2a2f3a;
-  --text:#e5e7eb;--muted:#9aa3b2;
-  --ok:#6ee7b7;--warn:#fbbf24;--bad:#f87171;--info:#7dd3fc;
-}
+:root{--bg:#0f1115;--surface:#171a21;--border:#2a2f3a;--text:#e5e7eb;--muted:#9aa3b2;--ok:#6ee7b7;--warn:#fbbf24;--bad:#f87171;--info:#7dd3fc}
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,sans-serif}
-body{display:flex;flex-direction:column;min-height:100vh}
-
-.badge{
-  position:fixed;top:16px;left:50%;transform:translateX(-50%);
-  font-size:11px;letter-spacing:.06em;color:var(--muted);
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:999px;padding:3px 12px;z-index:10;white-space:nowrap;
-}
-
-.face{
-  flex:1;display:flex;flex-direction:column;align-items:center;
-  justify-content:center;gap:32px;padding:80px 24px 24px;
-}
-
-.orb-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
-
-.orb{
-  width:52px;height:52px;border-radius:50%;
-  background:var(--muted);
-  transition:background .5s ease,opacity .5s ease;
-  position:relative;
-}
-.orb::before{
-  content:'';position:absolute;inset:-8px;border-radius:50%;
-  border:1px solid transparent;
-  transition:border-color .5s ease;
-}
-
-.s-stille .orb{background:var(--muted);opacity:.35;animation:ps 3s ease-in-out infinite}
-.s-lytter .orb{background:var(--ok);opacity:.75;animation:pl 1.2s ease-in-out infinite}
-.s-lytter .orb::before{border-color:var(--ok);animation:ring 1.2s ease-in-out infinite}
-.s-taenker .orb{background:var(--info);opacity:.85;animation:pt .9s ease-in-out infinite}
-.s-taenker .orb::before{border-color:var(--info);animation:ring .9s ease-in-out infinite}
-.s-taler .orb{background:var(--text);opacity:1;animation:pk .45s ease-in-out infinite}
-.s-pause .orb{background:var(--warn);opacity:.5}
-
-@keyframes ps{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.45}}
-@keyframes pl{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
-@keyframes pt{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
-@keyframes pk{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
-@keyframes ring{0%{transform:scale(1);opacity:.35}100%{transform:scale(2.1);opacity:0}}
-
-.state-label{
-  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
-  color:var(--muted);transition:color .4s ease;
-}
-.s-lytter .state-label{color:var(--ok)}
-.s-taenker .state-label{color:var(--info)}
-.s-taler .state-label{color:var(--text)}
-.s-pause .state-label{color:var(--warn)}
-
-.speech{max-width:540px;width:100%;text-align:center}
-
-.user-line{
-  font-size:14px;color:var(--muted);font-style:italic;
-  margin-bottom:20px;min-height:22px;
-  opacity:0;transition:opacity .5s ease;
-}
-.user-line.vis{opacity:1}
-
-.marcus-text{
-  font-size:22px;font-weight:300;line-height:1.55;
-  min-height:110px;color:var(--text);
-  transition:opacity .3s ease;
-  white-space:pre-wrap;
-}
-.marcus-text.dim{opacity:.2}
-
-.cursor{
-  display:inline-block;width:2px;height:.92em;
-  background:var(--ok);vertical-align:text-bottom;
-  margin-left:2px;animation:blink .8s step-end infinite;
-}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
-
-.sketch-wrap{width:240px;height:150px;opacity:0;transition:opacity .5s ease;flex-shrink:0}
-.sketch-wrap.vis{opacity:1}
-.sketch-wrap svg{width:100%;height:100%;overflow:visible}
-.sketch-wrap.stale{opacity:.4;filter:grayscale(.55)}
-.sketch-wrap.stale svg path,.sketch-wrap.stale svg line,.sketch-wrap.stale svg rect,.sketch-wrap.stale svg circle,.sketch-wrap.stale svg polyline,.sketch-wrap.stale svg ellipse{stroke-dasharray:4 3}
-
-.cards{
-  position:fixed;right:20px;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:8px;width:168px;
-}
-.card{
-  background:var(--surface);border:1px solid var(--border);
-  border-radius:10px;padding:10px 12px;font-size:12px;
-  transform:translateX(210px);opacity:0;
-  transition:transform .4s cubic-bezier(.25,.8,.25,1),opacity .35s ease;
-}
-.card.vis{transform:translateX(0);opacity:1}
-.card .k{color:var(--muted);font-size:11px;margin-bottom:2px}
-.card .v{font-weight:500}
-.card .v.ok{color:var(--ok)}
-.card .v.info{color:var(--info)}
-
-.bar{
-  padding:14px 20px;border-top:1px solid var(--border);
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  background:var(--surface);flex-shrink:0;
-}
-.controls{display:flex;gap:6px}
-.btn{
-  font:13px system-ui;background:transparent;color:var(--text);
-  border:1px solid var(--border);border-radius:8px;
-  padding:6px 14px;cursor:pointer;transition:border-color .2s;
-}
+body{display:flex;flex-direction:column;min-height:100vh;align-items:center;justify-content:center;padding:24px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.badge{font-size:11px;letter-spacing:.08em;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:999px;padding:3px 12px;margin-bottom:14px;white-space:nowrap}
+.stage{width:100%;max-width:360px;min-width:288px}
+.lab{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);min-height:15px;text-align:center;margin-bottom:4px;transition:color .4s}
+.m-lytte .lab{color:var(--ok)}.m-taenke .lab{color:var(--info)}.m-auto .lab{color:var(--warn)}.m-tale .lab{color:var(--text)}
+canvas{width:100%;height:auto;display:block}
+.speech{min-height:52px;margin-top:10px;font-size:15px;font-weight:300;line-height:1.5;text-align:center;color:var(--text)}
+.bar{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:16px}
+.btn{font:13px system-ui;background:transparent;color:var(--text);border:1px solid var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;transition:border-color .2s,background .2s}
 .btn:hover{border-color:var(--muted)}
-.btn.active{background:var(--ok);color:#03242e;border-color:var(--ok);font-weight:600}
-.step{font-size:12px;color:var(--muted)}
-.link{
-  font-size:12px;color:var(--muted);text-decoration:none;
-  border:1px solid var(--border);border-radius:6px;padding:5px 10px;
-  transition:color .2s,border-color .2s;
-}
-.link:hover{color:var(--text);border-color:var(--muted)}
-
-@media(max-width:640px){
-  .cards{display:none}
-  .marcus-text{font-size:18px}
-  .badge{font-size:10px;padding:2px 8px}
-}
+.btn.on{background:var(--ok);color:#03242e;border-color:var(--ok);font-weight:500}
+.pb{font:13px system-ui;background:transparent;color:var(--muted);border:1px dashed var(--border);border-radius:8px;padding:6px 12px;cursor:pointer;margin-left:4px}
+.pb:hover{color:var(--text);border-color:var(--muted)}
+.foot{font-size:11px;color:#5a6270;margin-top:12px;text-align:center}
+.foot a{color:var(--muted)}
 </style>
 </head>
 <body>
-
-<div class="badge" id="badge">SK-133 · henter…</div>
-
-<div class="face s-stille" id="face">
-  <div class="orb-wrap">
-    <div class="orb"></div>
-    <div class="state-label" id="slabel">stille</div>
+<div class="badge" id="badge">SK-134 · henter…</div>
+<div class="stage m-vente" id="stage">
+  <h2 class="sr" id="srhead">Marcus' facework — et ansigt der viser hans tilstand via to orbe og en data-ryg.</h2>
+  <div class="lab" id="lab">venter</div>
+  <canvas id="cv" role="img" aria-label="Marcus venter"></canvas>
+  <div class="speech" id="speech" aria-hidden="true"></div>
+  <div class="sr" id="sr" aria-live="polite" aria-atomic="true"></div>
+  <div class="bar">
+    <button class="btn" data-m="vente">vente</button>
+    <button class="btn" data-m="lytte">lytte</button>
+    <button class="btn" data-m="taenke">tænke</button>
+    <button class="btn" data-m="auto">auto</button>
+    <button class="btn" data-m="tale">tale</button>
+    <button class="pb" id="play">spil igennem</button>
   </div>
-  <div class="sketch-wrap" id="sketch-wrap">
-    <svg id="sketch" viewBox="0 0 240 150" xmlns="http://www.w3.org/2000/svg"></svg>
-  </div>
-  <div class="speech">
-    <div class="user-line" id="uline"></div>
-    <div class="marcus-text" id="mtext"></div>
-  </div>
+  <div class="foot"><a href="../boards/marcus-face/marcus-face.html">boards → anatomi</a> · krop = stadie · grøn = cursor/pen</div>
 </div>
-
-<div class="cards">
-  <div class="card" id="c-decay">
-    <div class="k">decay</div>
-    <div class="v" id="c-decay-v">—</div>
-  </div>
-  <div class="card" id="c-board">
-    <div class="k">board</div>
-    <div class="v" id="c-board-v">tasks · —</div>
-  </div>
-</div>
-
-<div class="bar">
-  <div class="controls">
-    <button class="btn" id="bprev" aria-label="Forrige">←</button>
-    <button class="btn active" id="bplay">▶ Afspil</button>
-    <button class="btn" id="bnext" aria-label="Næste">→</button>
-  </div>
-  <span class="step" id="step">1 / 7</span>
-  <a href="../boards/marcus-face/marcus-face.html" class="link">boards → anatomi</a>
-</div>
-
 <script>
 (function(){
-var face=document.getElementById('face');
-var slabel=document.getElementById('slabel');
-var uline=document.getElementById('uline');
-var mtext=document.getElementById('mtext');
-var step=document.getElementById('step');
-var bplay=document.getElementById('bplay');
-var bprev=document.getElementById('bprev');
-var bnext=document.getElementById('bnext');
-var cards={decay:document.getElementById('c-decay'),board:document.getElementById('c-board')};
-var sw=document.getElementById('sketch-wrap');
-var sk=document.getElementById('sketch');
+var cv=document.getElementById('cv'),ctx=cv.getContext('2d');
+var stage=document.getElementById('stage'),lab=document.getElementById('lab'),speech=document.getElementById('speech'),sr=document.getElementById('sr'),playBtn=document.getElementById('play');
+var W=360,H=210,baseY=150,BR=15;
+var dpr=Math.max(1,Math.min(3,window.devicePixelRatio||1));
+cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);ctx.setTransform(dpr,0,0,dpr,0,0);
+var reduced=!!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+var COL={vente:[154,163,178],lytte:[110,231,183],taenke:[125,211,252],auto:[251,191,36],tale:[229,231,235]};
+var START={vente:180,lytte:226,taenke:140,auto:180,tale:46};
+var big={x:180,y:baseY,vx:0,vy:0,r:BR,col:[154,163,178]};
+var green={x:250,y:baseY,vx:0,vy:0,r:4.5};
+var target=COL.vente.slice(),bigTX=180,tick=0,mode='vente',autoT=0,gAng=0,gTX=250,gIT=0,waitT=0,prog=0,player=null;
 
-var STATES=['stille','lytter','taenker','taler','pause'];
-var LABELS={stille:'stille',lytter:'lytter',taenker:'tænker',taler:'taler',pause:'pause'};
-
-var SVG_LYTTER='<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="70" cy="38" r="14" stroke-width="2.5"/><line x1="70" y1="52" x2="70" y2="94" stroke-width="3"/><line x1="70" y1="67" x2="52" y2="78" stroke-width="2"/><line x1="70" y1="67" x2="88" y2="78" stroke-width="2"/><line x1="70" y1="94" x2="58" y2="120" stroke-width="2.5"/><line x1="70" y1="94" x2="82" y2="120" stroke-width="2.5"/><path d="M108,28 Q124,38 108,48" stroke="var(--ok)" stroke-width="2.5" fill="none"/><path d="M114,20 Q136,37 114,54" stroke="var(--ok)" stroke-width="2" fill="none"/><circle cx="170" cy="36" r="22" stroke="var(--ok)" stroke-width="2" fill="var(--surface)"/><text x="170" y="45" font-size="24" text-anchor="middle" fill="var(--ok)" stroke="none" font-family="system-ui">?</text></g>';
-
-var SVG_TAENKER='<g stroke="currentColor" fill="none" stroke-linecap="round"><circle cx="44" cy="94" r="10" stroke-width="2.5"/><line x1="44" y1="104" x2="44" y2="132" stroke-width="2.5"/><line x1="44" y1="115" x2="34" y2="126" stroke-width="2"/><line x1="44" y1="115" x2="54" y2="126" stroke-width="2"/><circle cx="63" cy="79" r="3" fill="currentColor" stroke="none"/><circle cx="76" cy="66" r="4" fill="currentColor" stroke="none"/><rect x="84" y="10" width="136" height="60" rx="30" stroke-width="2" fill="var(--surface)"/><ellipse cx="96" cy="66" rx="12" ry="7" stroke-width="2" fill="var(--surface)"/><circle cx="120" cy="40" r="5.5" fill="var(--info)" stroke="none"/><circle cx="152" cy="34" r="5.5" fill="var(--info)" stroke="none"/><circle cx="184" cy="40" r="5.5" fill="var(--info)" stroke="none"/></g>';
-
-function svgFiler(){
-  var known=LIVE.loaded&&LIVE.uncKnown;
-  var n=known?String(LIVE.uncCount):'?';
-  var nfill=(known&&LIVE.uncCount>0)?'var(--warn)':'var(--muted)';
-  var lbl=!LIVE.loaded?'commit':(known?(LIVE.uncCount===0?'committet':'uncommitted'):'ukendt');
-  var b=(LIVE.loaded&&LIVE.backupDays!=null)?LIVE.backupDays+'d':'–';
-  return '<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="44" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="11" y="35" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="16" y="26" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="21" y="17" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="26" y="8" width="36" height="44" rx="2" stroke-width="2.5" fill="var(--bg)"/><path d="M50,8 L62,20 L50,20 Z" stroke-width="1.5" fill="var(--surface)"/><text x="44" y="32" font-size="13" font-weight="bold" text-anchor="middle" fill="'+nfill+'" stroke="none" font-family="system-ui">'+n+'</text><text x="44" y="64" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">'+lbl+'</text><line x1="76" y1="55" x2="94" y2="55" stroke="var(--muted)" stroke-width="1.5"/><polyline points="91,51 97,55 91,59" stroke="var(--muted)" stroke-width="1.5" fill="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2"/><path d="M105,18 Q102,18 102,21 L102,30 L154,30 L154,21 Q154,18 151,18 Z" fill="var(--warn)" stroke="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2" fill="none"/><line x1="116" y1="13" x2="116" y2="24" stroke-width="2.5"/><line x1="140" y1="13" x2="140" y2="24" stroke-width="2.5"/><text x="128" y="52" font-size="17" font-weight="bold" text-anchor="middle" fill="var(--text)" stroke="none" font-family="system-ui">'+b+'</text><text x="128" y="63" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">backup</text></g>';
+// ---------- live data ----------
+var GIST='3746918d37090c31dcab5744f3634646';
+var LIVE={loaded:false,ok:false,stale:false,ageDays:null,decay:null,days:null,uncKnown:false,uncCount:null,backlog:null,bugsHigh:null,backupDays:null,promoted:null};
+function num(v){return typeof v==='number'&&isFinite(v)?v:null;}
+function setBadge(){
+  var b=document.getElementById('badge');if(!b)return;
+  if(!LIVE.loaded){b.textContent='SK-134 · henter…';b.style.color='var(--muted)';return;}
+  if(!LIVE.ok){b.textContent='SK-134 · offline';b.style.color='var(--bad)';return;}
+  var age=LIVE.ageDays==null?'alder ukendt':(LIVE.ageDays<=0?'i dag':LIVE.ageDays+'d siden');
+  b.textContent='SK-134 · '+(LIVE.stale?'gammelt':'live')+' · '+age;
+  b.style.color=LIVE.stale?'var(--warn)':'var(--ok)';
+}
+function loadGist(){
+  fetch('https://api.github.com/gists/'+GIST).then(function(r){if(!r.ok)throw r.status;return r.json();}).then(function(d){
+    var raw=d.files&&d.files['marcus-state.json'];if(!raw)throw 0;
+    var s=JSON.parse(raw.content),dv=s.dirty||{};
+    var dN=typeof dv.d==='number',cN=typeof dv.c==='number';
+    LIVE.uncKnown=dN&&cN; // BEGGE træer skal være numeriske (count); ellers NO-DATA (aldrig fake-green i overgang)
+    LIVE.uncCount=LIVE.uncKnown?((dv.d>0?1:0)+(dv.c>0?1:0)):null;
+    var t1=num(s.open&&s.open.tasks_trin1),t2=num(s.open&&s.open.tasks_trin2);
+    LIVE.backlog=(t1!=null&&t2!=null)?t1+t2:null; // kræv BEGGE felter (ingen fake-low)
+    LIVE.bugsHigh=s.open?num(s.open.bugs_high):null;
+    LIVE.promoted=s.open?num(s.open.sketches_promoted):null;
+    var bd=num(s.backup_age_days);LIVE.backupDays=bd!=null?Math.round(bd):null;
+    LIVE.decay=s.decay||null;LIVE.days=num(s.days_since_interaction);
+    var tms=s.generated_at?new Date(s.generated_at).getTime():NaN;
+    var ageH=isFinite(tms)?((Date.now()-tms)/3600000):null;
+    LIVE.ageDays=ageH!=null?Math.max(0,Math.floor(ageH/24)):null;
+    LIVE.stale=(LIVE.decay&&LIVE.decay!=='fresh')||(ageH!=null&&ageH>48)||(LIVE.decay==null&&ageH==null); // friskhed skal bevises
+    LIVE.loaded=true;LIVE.ok=true;onData();
+  }).catch(function(){LIVE.loaded=true;LIVE.ok=false;onData();});
+}
+function onData(){
+  setBadge();setAria();
+  if(mode==='tale'&&ridge.length===0){buildRidge();setNarr(ridgeNarration());if(taleStage==='wait')taleStage='draw';}
+  if(reduced){step();draw();}
 }
 
-var SVG_BACKLOG='<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="82" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="64" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="46" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="28" width="62" height="15" rx="2" stroke-width="2.5" fill="var(--bg)"/><text x="51" y="40" font-size="9" font-weight="600" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">BACKLOG</text><line x1="96" y1="24" x2="96" y2="102" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5,4"/><line x1="110" y1="64" x2="202" y2="46" stroke="var(--ok)" stroke-width="3"/><polyline points="191,38 204,44 196,53" stroke="var(--ok)" stroke-width="3" fill="none" stroke-linejoin="round"/><text x="166" y="38" font-size="9" text-anchor="middle" fill="var(--ok)" stroke="none" font-family="system-ui">→ later</text></g>';
-
-var LIVE={loaded:false,stale:false,ageDays:null,uncKnown:false,uncCount:null,backupDays:null,backlog:null};
-
-function talerText(withBacklog){
-  if(!LIVE.loaded) return 'Henter min tilstand…';
-  var bak=LIVE.backupDays!=null?(LIVE.backupDays===1?'én dag':LIVE.backupDays+' dage'):'? dage';
-  var main;
-  if(!LIVE.uncKnown) main='Commit-tilstanden kan jeg ikke aflæse lige nu (kilden mangler). Backup-bundlen er '+bak+' gammel.';
-  else if(LIVE.uncCount===0) main='Alt er committet. Backup-bundlen er '+bak+' gammel.';
-  else main='Der er ucommittede ændringer ('+LIVE.uncCount+'/2 git-træer). Backup-bundlen er '+bak+' gammel.';
-  if(withBacklog) main+='\n\nResten er backlog'+(LIVE.backlog!=null?' ('+LIVE.backlog+' ting)':'')+'.';
-  if(LIVE.stale) main+='\n\n(øjebliksbillede ~'+LIVE.ageDays+'d gammelt)';
-  return main;
-}
-
-var SCRIPT=[
-  {state:'stille',user:'',text:'',show:[],dur:2500,svg:null},
-  {state:'lytter',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay'],dur:2200,svg:SVG_LYTTER},
-  {state:'taenker',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay'],dur:1900,svg:SVG_TAENKER},
-  {state:'taler',user:'"Hvad er vigtigst i dag?"',live:true,show:['decay','board'],dur:4800,svg:svgFiler},
-  {state:'pause',user:'"Hvad er vigtigst i dag?"',live:true,show:['decay','board'],dur:1900,svg:svgFiler},
-  {state:'taler',user:'"Hvad er vigtigst i dag?"',live:true,bl:true,show:['board'],dur:3200,svg:SVG_BACKLOG},
-  {state:'stille',user:'',live:true,bl:true,show:[],dur:0,svg:null},
-];
-
-var cur=0,playing=false,timer=null,typer=null;
-
-function applyState(s){
-  STATES.forEach(function(x){face.classList.remove('s-'+x);});
-  face.classList.add('s-'+s);
-  slabel.textContent=LABELS[s]||s;
-}
-
-function applyCards(show){
-  Object.keys(cards).forEach(function(k){cards[k].classList.remove('vis');});
-  show.forEach(function(k){if(cards[k])cards[k].classList.add('vis');});
-}
-
-function killTyper(){if(typer){clearInterval(typer);typer=null;}}
-
-function typeOut(text){
-  killTyper();
-  mtext.textContent='';
-  if(!text)return;
-  var cursor=document.createElement('span');
-  cursor.className='cursor';
-  mtext.appendChild(cursor);
-  var i=0;
-  typer=setInterval(function(){
-    if(i<text.length){mtext.insertBefore(document.createTextNode(text[i]),cursor);i++;}
-    else{clearInterval(typer);typer=null;cursor.remove();}
-  },26);
-}
-
-function render(idx,animate){
-  var s=SCRIPT[idx];
-  applyState(s.state);
-  applyCards(s.show);
-  var svgContent=(typeof s.svg==='function')?s.svg():s.svg;
-  if(svgContent){sk.innerHTML=svgContent;sw.classList.add('vis');}
-  else{sk.innerHTML='';sw.classList.remove('vis');}
-  sw.classList.toggle('stale',!!(LIVE.loaded&&LIVE.stale&&svgContent));
-  step.textContent=(idx+1)+' / '+SCRIPT.length;
-  uline.textContent=s.user;
-  uline.classList.toggle('vis',!!s.user);
-  mtext.classList.remove('dim');
-  var txt=s.live?talerText(!!s.bl):s.text;
-  if(s.state==='taenker'){
-    killTyper();mtext.textContent=txt;mtext.classList.add('dim');
-  } else if(animate&&s.state==='taler'){
-    typeOut(txt);
-  } else {
-    killTyper();mtext.textContent=txt;
+// ---------- ridge (default tale technique, La Linea one-stroke, honest) ----------
+var ridge=[],ridgeLabels=[];
+function buildRidge(){
+  var M=[];
+  M.push(LIVE.uncKnown?{l:'commit',v:LIVE.uncCount,ref:2,warn:LIVE.uncCount>0}:{l:'commit',nodata:true});
+  M.push({l:'backlog',v:LIVE.backlog,ref:60,nodata:LIVE.backlog==null});
+  M.push({l:'bugs',v:LIVE.bugsHigh,ref:10,warn:(LIVE.bugsHigh||0)>7,nodata:LIVE.bugsHigh==null}); // warn-tærskel >7 (ikke baseline 5); jf. design-doc
+  M.push({l:'backup',v:LIVE.backupDays,ref:7,warn:(LIVE.backupDays||0)>3,nodata:LIVE.backupDays==null});
+  M.push({l:'fremdrift',v:LIVE.promoted,ref:120,nodata:LIVE.promoted==null});
+  var x0=70,x1=330,n=M.length,seg=(x1-x0)/n,maxH=66;
+  ridge=[{x:x0,y:baseY}];ridgeLabels=[];
+  for(var i=0;i<n;i++){var cx=x0+seg*i+seg/2,m=M[i];
+    if(m.nodata){ridge.push({x:cx,y:baseY,nodata:true});ridgeLabels.push({x:cx,y:baseY+14,t:m.l+' ?',muted:true});}
+    else{var h=Math.max(5,Math.min(maxH,(m.v/m.ref)*maxH));ridge.push({x:cx,y:baseY-h,warn:!!m.warn});ridgeLabels.push({x:cx,y:baseY+14,t:m.l+' '+m.v,warn:!!m.warn});}
   }
+  ridge.push({x:x1,y:baseY});
+}
+function ridgeNarration(){
+  if(!LIVE.loaded)return 'Henter min tilstand…';
+  if(!LIVE.ok)return 'Jeg kan ikke nå min tilstand lige nu (offline).';
+  var b=(LIVE.backlog!=null?LIVE.backlog:'?')+' i backlog, '+(LIVE.bugsHigh!=null?LIVE.bugsHigh:'?')+' høj-bugs, backup '+(LIVE.backupDays!=null?LIVE.backupDays+'d':'?');
+  var c=LIVE.uncKnown?(LIVE.uncCount===0?'Alt er committet.':'Der er ucommittede ændringer ('+LIVE.uncCount+'/2 træer).'):'Commit-tilstanden kender jeg ikke endnu (kilden opdateres ved næste pulse).';
+  var s='Lige nu: '+b+'. '+c;
+  if(LIVE.stale)s+=' (øjebliksbillede ~'+(LIVE.ageDays!=null?LIVE.ageDays+'d':'alder ukendt')+(LIVE.ageDays!=null?' gammelt':'')+')';
+  return s;
 }
 
-function stopAuto(){
-  playing=false;
-  if(timer){clearTimeout(timer);timer=null;}
-  if(cur>=SCRIPT.length-1){bplay.textContent='↺ Igen';bplay.className='btn';}
-  else{bplay.textContent='▶ Afspil';bplay.className='btn active';}
+// ---------- narration ----------
+var narr='',typed=0,typer=null;
+function setNarr(t){narr=t;sr.textContent=t;if(typer){clearInterval(typer);typer=null;}
+  if(reduced){typed=narr.length;speech.textContent=narr;}
+  else{typed=0;speech.textContent='';typer=setInterval(function(){if(typed<narr.length){typed++;speech.textContent=narr.slice(0,typed);}else{clearInterval(typer);typer=null;}},34);}}
+
+// ---------- aria ----------
+function setAria(){cv.setAttribute('aria-label','Marcus '+(mode==='tale'?'taler':mode)+'. '+(LIVE.loaded?ridgeNarration():'henter tilstand')); }
+
+// ---------- mode ----------
+var taleStage='none';
+function setMode(m){
+  mode=m;target=COL[m];bigTX=START[m];autoT=0;waitT=0;gIT=0;prog=0;
+  narr='';typed=0;ridge=[];ridgeLabels=[];if(typer){clearInterval(typer);typer=null;}speech.textContent='';sr.textContent='';
+  [].slice.call(document.querySelectorAll('.btn')).forEach(function(b){b.classList.toggle('on',b.dataset.m===m);});
+  stage.className='stage m-'+m;lab.textContent=m==='auto'?'auto · arbejder selv':m==='tale'?'taler':m;
+  taleStage=(m==='tale')?'wait':'none';
+  setAria();
+  if(reduced){step();draw();}
 }
+function orbit(sp){gAng+=sp;var R=big.r+13;var ox=big.x+Math.cos(gAng)*R,oy=big.y+Math.sin(gAng)*R*0.62;green.x+=(ox-green.x)*0.4;green.y+=(oy-green.y)*0.4;green.r+=(4-green.r)*0.2;}
 
-function advance(){
-  var dur=SCRIPT[cur].dur||2000;
-  timer=setTimeout(function(){
-    if(cur<SCRIPT.length-1){cur++;render(cur,true);if(playing)advance();}
-    else{stopAuto();}
-  },dur);
-}
-
-function startAuto(){playing=true;bplay.textContent='⏸ Pause';bplay.className='btn active';advance();}
-
-bplay.addEventListener('click',function(){
-  if(playing){stopAuto();}
-  else if(cur>=SCRIPT.length-1){cur=0;render(cur,false);startAuto();}
-  else{startAuto();}
-});
-bprev.addEventListener('click',function(){stopAuto();if(cur>0){cur--;render(cur,false);}});
-bnext.addEventListener('click',function(){stopAuto();if(cur<SCRIPT.length-1){cur++;render(cur,true);}});
-
-window.__faceworkApplyLive=function(live){for(var k in live){LIVE[k]=live[k];}LIVE.loaded=true;render(cur,false);};
-render(0,false);
-})();
-</script>
-
-<script>
-(function(){
-var GIST_ID='3746918d37090c31dcab5744f3634646';
-
-if(!GIST_ID)return;
-
-var badge=document.getElementById('badge');
-
-function ago(iso){
-  var m=Math.round((Date.now()-new Date(iso))/60000);
-  if(m<1)return'nu';if(m<60)return m+'m siden';
-  if(m<1440)return Math.round(m/60)+'t siden';
-  return Math.round(m/1440)+'d siden';
-}
-
-function setCard(id,text,cls){
-  var el=document.getElementById(id);if(!el)return;
-  el.textContent=text;el.className='v'+(cls?' '+cls:'');
-}
-
-fetch('https://api.github.com/gists/'+GIST_ID)
-  .then(function(r){return r.json();})
-  .then(function(data){
-    var raw=data.files&&data.files['marcus-state.json'];
-    if(!raw)throw new Error('no state');
-    var s=JSON.parse(raw.content);
-
-    // uncommitted: dirty.{d,c} is structurally broken upstream — push-facework-state.mjs coerces an
-    // INTEGER count with `=== true`, so the Gist always publishes boolean false (NOT "0 = clean").
-    // Only trust it once push publishes real numeric counts; until then show NO-DATA (never a fake "committet").
-    var dv=s.dirty||{};
-    var dNum=(typeof dv.d==='number'),cNum=(typeof dv.c==='number');
-    var uncKnown=dNum||cNum;
-    var uncCount=uncKnown?(((dNum?dv.d:0)>0?1:0)+((cNum?dv.c:0)>0?1:0)):null;
-    var backupDays=(s.backup_age_days!=null)?Math.round(s.backup_age_days):null;
-    var backlog=(s.open&&s.open.tasks_trin1!=null)?((s.open.tasks_trin1||0)+(s.open.tasks_trin2||0)):null;
-
-    // staleness from generated_at (canonical fresh threshold = 2 days / 48h)
-    var ageH=s.generated_at?((Date.now()-new Date(s.generated_at))/3600000):null;
-    var stale=(ageH!=null)&&(ageH>48);
-
-    var decayTxt=(s.decay||'?')+(s.days_since_interaction!=null?' · '+s.days_since_interaction+'d':'');
-    var decayCls=s.decay==='fresh'?'ok':s.decay==='drifting'?'info':'bad';
-    setCard('c-decay-v',decayTxt,decayCls);
-
-    // calibration_cap is per-session, NOT a disk fact -> not shown as a live card
-
-    setCard('c-board-v',backlog!=null?'tasks · '+backlog+' åbne':'tasks · —','');
-
-    // feed sketch + narration; the demo engine owns rendering so values survive re-renders
-    if(window.__faceworkApplyLive){
-      window.__faceworkApplyLive({
-        uncKnown:uncKnown,uncCount:uncCount,backupDays:backupDays,backlog:backlog,
-        stale:stale,ageDays:(ageH!=null?Math.max(1,Math.round(ageH/24)):null)
-      });
+// ---------- step (physics) ----------
+function step(){
+  if(reduced){
+    big.x=bigTX;big.y=baseY;big.r=BR;for(var k=0;k<3;k++)big.col[k]=target[k];
+    if(mode==='tale'){
+      if(ridge.length===0&&LIVE.loaded){buildRidge();setNarr(ridgeNarration());}
+      taleStage=(ridge.length?'done':'wait');prog=1;
+      var L=ridge.length?ridge[ridge.length-1]:null;if(L){green.x=L.x;green.y=L.y;}green.r=4.2;
+    }else{green.x=big.x+big.r+12;green.y=baseY;green.r=4;}
+    return;
+  }
+  tick++;
+  for(var k2=0;k2<3;k2++)big.col[k2]+=(target[k2]-big.col[k2])*0.12;
+  var rY=baseY;if(mode==='taenke')rY=baseY-6*Math.max(0,Math.sin(tick*0.05));
+  big.vy+=-0.022*(big.y-rY);big.vy*=0.88;big.y+=big.vy;
+  if(mode==='auto'){autoT++;if(autoT>120){autoT=0;bigTX=70+Math.random()*210;}}
+  big.vx+=-0.02*(big.x-bigTX);big.vx*=0.84;big.x+=big.vx;
+  var br=BR+(mode==='vente'?Math.sin(tick*0.04)*1.3:0);big.r+=(br-big.r)*0.2;
+  if(mode==='tale'){
+    if(taleStage==='wait'){
+      waitT++;orbit(0.16);
+      var settled=Math.abs(big.x-bigTX)<4&&Math.abs(big.vx)<0.4&&waitT>16;
+      if(LIVE.loaded&&(settled||waitT>300)){taleStage='draw';buildRidge();setNarr(ridgeNarration());}
+    }else{
+      prog=narr.length?Math.min(1,typed/narr.length):1;
+      var fp=prog*(ridge.length-1),idx=Math.floor(fp),frac=fp-idx;
+      var a=ridge[idx]||ridge[ridge.length-1],bb=ridge[Math.min(ridge.length-1,idx+1)];
+      green.x=a.x+(bb.x-a.x)*frac;green.y=a.y+(bb.y-a.y)*frac;green.r+=(4.2-green.r)*0.3;
+      if(prog>=1&&!typer)taleStage='done';
     }
+  }else if(mode==='taenke'){orbit(0.15);}
+  else if(mode==='lytte'){var hx=big.x+big.r+11,hy=big.y-5+Math.sin(tick*0.25)*1.6;green.vx+=-0.07*(green.x-hx);green.vx*=0.78;green.x+=green.vx;green.vy+=-0.07*(green.y-hy);green.vy*=0.78;green.y+=green.vy;green.r+=(3.8-green.r)*0.1;}
+  else if(mode==='auto'){gIT++;if(gIT>45){gIT=0;gTX=60+Math.random()*250;}green.vx+=-0.035*(green.x-gTX);green.vx*=0.8;green.x+=green.vx;green.vy+=-0.05*(green.y-(baseY-18+Math.sin(tick*0.1)*12));green.vy*=0.78;green.y+=green.vy;green.r+=(4-green.r)*0.1;}
+  else{gIT++;if(gIT>150){gIT=0;gTX=70+Math.random()*220;}green.vx+=-0.015*(green.x-gTX);green.vx*=0.86;green.x+=green.vx;green.vy+=-0.04*(green.y-(baseY-2+Math.sin(tick*0.04)*3));green.vy*=0.82;green.y+=green.vy;green.r+=(4-green.r)*0.1;}
+}
 
-    if(badge&&s.generated_at){
-      badge.textContent='SK-133 · '+(stale?'stale':'live')+' · '+ago(s.generated_at);
-      badge.style.color=stale?'var(--bad)':'var(--ok)';
-    }
-  })
-  .catch(function(){
-    if(badge){badge.textContent='SK-133 · offline';badge.style.color='var(--bad)';}
-  });
+// ---------- draw ----------
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  var dim=(mode==='tale'&&LIVE.stale)?0.4:1;
+  ctx.strokeStyle='rgba(229,231,235,0.26)';ctx.lineWidth=2;ctx.lineCap='round';
+  ctx.beginPath();ctx.moveTo(20,baseY);ctx.lineTo(W-20,baseY);ctx.stroke();
+  if(mode==='lytte'){var rp=reduced?0.5:(tick%66)/66;ctx.strokeStyle='rgba(110,231,183,'+(0.5*(1-rp))+')';ctx.lineWidth=1.5;ctx.beginPath();ctx.arc(big.x,big.y,big.r+4+rp*20,0,7);ctx.stroke();}
+  if(mode==='taenke'){for(var d=0;d<3;d++){var oy=reduced?0:Math.sin(tick*0.08+d*0.7)*2;ctx.fillStyle='rgba(125,211,252,0.9)';ctx.beginPath();ctx.arc(big.x-9+d*9,big.y-big.r-9+oy,2.4,0,7);ctx.fill();}}
+  if(mode==='auto'){for(var sc=0;sc<2;sc++){var an=reduced?(sc?Math.PI:0):tick*0.045+sc*Math.PI;ctx.fillStyle='rgba(251,191,36,'+(sc?0.6:0.95)+')';ctx.beginPath();ctx.arc(big.x+Math.cos(an)*(big.r+12),big.y+Math.sin(an)*(big.r+12),sc?2.6:3.4,0,7);ctx.fill();}}
+  if(mode==='tale'&&taleStage!=='wait'&&ridge.length>1){
+    var upto=Math.max(1,Math.floor(prog*(ridge.length-1)));
+    ctx.strokeStyle='rgba(110,231,183,'+dim+')';ctx.lineWidth=2.4;ctx.lineJoin='round';ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(ridge[0].x,ridge[0].y);
+    for(var j=1;j<=upto;j++)ctx.lineTo(ridge[j].x,ridge[j].y);
+    ctx.lineTo(green.x,green.y);ctx.stroke();
+    for(var p=1;p<ridge.length-1;p++){if(p>upto)break;var pt=ridge[p];
+      if(pt.nodata){ctx.strokeStyle='rgba(154,163,178,'+(0.6*dim)+')';ctx.lineWidth=1.4;ctx.beginPath();ctx.arc(pt.x,baseY-6,3.6,0,7);ctx.stroke();ctx.fillStyle='rgba(154,163,178,'+(0.6*dim)+')';ctx.font='9px system-ui';ctx.textAlign='center';ctx.fillText('?',pt.x,baseY-13);}
+      else if(pt.warn){ctx.fillStyle='rgba(251,191,36,'+dim+')';ctx.beginPath();ctx.arc(pt.x,pt.y,2.6,0,7);ctx.fill();}}
+    ctx.font='8px system-ui';ctx.textAlign='center';
+    for(var q=0;q<ridgeLabels.length;q++){if((q+1)>upto)break;var L=ridgeLabels[q];ctx.fillStyle=(L.warn?'rgba(251,191,36,'+dim:L.muted?'rgba(154,163,178,'+(0.5*dim):'rgba(154,163,178,'+dim)+')';ctx.fillText(L.t,L.x,L.y);}
+  }
+  var bodyA=(mode==='tale'&&LIVE.stale)?0.55:1,sq=Math.min(0.2,Math.abs(big.vy)*0.02);
+  ctx.globalAlpha=bodyA;ctx.fillStyle='rgb('+Math.round(big.col[0])+','+Math.round(big.col[1])+','+Math.round(big.col[2])+')';
+  ctx.beginPath();ctx.ellipse(big.x,big.y,big.r*(1-sq),big.r*(1+sq),0,0,7);ctx.fill();ctx.globalAlpha=1;
+  ctx.fillStyle='rgba(110,231,183,'+(mode==='tale'?dim:1)+')';ctx.beginPath();ctx.arc(green.x,green.y,green.r,0,7);ctx.fill();
+}
+
+// ---------- loop ----------
+function tickLoop(){step();draw();if(!reduced)requestAnimationFrame(tickLoop);}
+if(window.matchMedia){var mq=window.matchMedia('(prefers-reduced-motion: reduce)');(mq.addEventListener?mq.addEventListener.bind(mq,'change'):mq.addListener.bind(mq))(function(e){reduced=e.matches;if(reduced){step();draw();}else tickLoop();});}
+
+// ---------- controls ----------
+[].slice.call(document.querySelectorAll('.btn')).forEach(function(b){b.addEventListener('click',function(){stopPlay();setMode(b.dataset.m);});});
+function stopPlay(){if(player){clearTimeout(player);player=null;}playBtn.textContent='spil igennem';}
+var durs={vente:1600,lytte:1900,taenke:2200,auto:2200,tale:6000},ms=['vente','lytte','taenke','auto','tale'];
+function play(i){setMode(ms[i]);player=setTimeout(function(){if(i<ms.length-1)play(i+1);else stopPlay();},durs[ms[i]]);}
+playBtn.addEventListener('click',function(){if(player)stopPlay();else{playBtn.textContent='stop';play(0);}});
+
+loadGist();setMode('vente');tickLoop();
 })();
 </script>
 </body>
