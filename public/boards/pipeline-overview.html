@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+<meta charset="UTF-8">
+<title>Marcus Pipeline — SK → T-NNN promotion-flow</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11.10.0/dist/mermaid.min.js" integrity="sha384-PY+AFiXLIHkR5jE4nk0JwPQQmmQlT4mJXFlgeT4jJeuARaBQBK+nSwwxzrPRAtUM" crossorigin="anonymous"></script>
+<style>
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; max-width: 1100px; margin: 0 auto; padding: 24px; color: #1e293b; background: transparent; line-height: 1.5; }
+  h1 { font-size: 1.5rem; margin-bottom: 0.25rem; }
+  .sub { color: #64748b; font-size: 0.9rem; margin-bottom: 1.5rem; }
+  .diagram-box { background: #fafbfc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin: 16px 0; }
+  pre.mermaid { background: transparent; text-align: center; }
+  h2 { font-size: 1.1rem; margin-top: 1.75rem; padding-bottom: 0.25rem; border-bottom: 1px solid #e2e8f0; }
+  h3 { font-size: 0.95rem; margin-top: 1.25rem; margin-bottom: 0.4rem; color: #334155; }
+  .fase-card { background: #f8fafc; border-left: 3px solid #94a3b8; padding: 10px 14px; margin: 10px 0; border-radius: 4px; }
+  .fase-card.fase-1, .fase-card.fase-2, .fase-card.fase-3 { border-left-color: #60a5fa; }
+  .fase-card.fase-4 { border-left-color: #f59e0b; }
+  .fase-card.fase-5, .fase-card.fase-6 { border-left-color: #34d399; }
+  .fase-card.fase-7, .fase-card.fase-8, .fase-card.fase-9 { border-left-color: #a78bfa; }
+  .fase-label { font-weight: 600; font-size: 0.85rem; text-transform: uppercase; color: #475569; letter-spacing: 0.04em; }
+  .fase-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.4rem; }
+  .fase-body { font-size: 0.9rem; color: #1e293b; }
+  .fase-body p { margin: 0.3rem 0; }
+  .fase-body ul { margin: 0.3rem 0 0.3rem 1.25rem; padding: 0; }
+  .ref { font-family: ui-monospace, "SF Mono", Consolas, monospace; font-size: 0.85rem; background: #eef2f7; padding: 1px 5px; border-radius: 3px; color: #334155; }
+  table { border-collapse: collapse; margin: 0.5rem 0 1rem; width: 100%; font-size: 0.88rem; }
+  th, td { border: 1px solid #e2e8f0; padding: 6px 10px; text-align: left; vertical-align: top; }
+  th { background: #f1f5f9; font-weight: 600; }
+  .meta-block { background: #fef9c3; border: 1px solid #fde047; padding: 10px 14px; border-radius: 4px; margin-top: 1.5rem; font-size: 0.88rem; }
+  .meta-block strong { color: #713f12; }
+</style>
+</head>
+<body>
+
+<h1>Marcus Pipeline — SK → T-NNN promotion-flow</h1>
+<div class="sub">TMAP-fase-wired pipeline per dogfood-test-strategy §3 (PRA-SCORE) + §3.5 (technique selection) + §4.5 (decision gates) + §6 (LEAN-loop). Etableret 2026-05-27.</div>
+
+<div class="diagram-box">
+<pre class="mermaid">
+flowchart TD
+  F1["Fase 1 — FANG<br/>SK status: new<br/>Titel + desc"] --> F2["Fase 2 — PRA Fase 1<br/>én side kendt (chance ELLER damage)<br/>+ Plan-tilhørs<br/>Default Medium på ukendt side"]
+  F2 --> F3["Fase 3 — PRA Fase 2<br/>begge sider kendt<br/>Risk Class A/B/C<br/>+ Quality characteristic"]
+  F3 --> F4{"Fase 4 — DECISION GATES<br/>4 tjek i rækkefølge"}
+  F4 --> G1["Data-grundlag<br/>tæller/baseline/dispatch?"]
+  G1 -- OK --> G2["Skill<br/>quality/knowsoft tilgængelig?"]
+  G2 -- OK --> G3["Effort<br/>proportional til omfang?"]
+  G3 -- OK --> G4["Mandat<br/>Christian-godkendt?"]
+  G4 -- OK --> F5["Fase 5 — T-NNN trin 1<br/>Forslag-row tilføjes<br/>tasks-master.md"]
+  G1 -- Fejl --> TM["Take measures<br/>etabler basis / træn skill<br/>skift technique / forhandl scope"]
+  G2 -- Fejl --> TM
+  G3 -- Fejl --> TM
+  G4 -- Fejl --> TM
+  TM --> F2
+  F5 --> F6["Fase 6 — Christian-mandat<br/>T-119 trin 2"]
+  F6 --> F7["Fase 7 — Test-periode<br/>7-30 dage<br/>Svigt-tæller aktiv"]
+  F7 --> F8["Fase 8 — Måling<br/>pattern-mining 28/6<br/>LEAN-loop §6"]
+  F8 --> F9{"Fase 9 — KONSEKVENS"}
+  F9 --> K1["Trin 3<br/>auto-opgave / sprite"]
+  F9 --> K2["Rollback<br/>anomaly fanget"]
+  F9 --> K3["Iteration<br/>ny vinkel, ny test"]
+  K2 --> F2
+
+  classDef fang fill:#dbeafe,stroke:#3b82f6,color:#1e3a8a
+  classDef gate fill:#fef3c7,stroke:#f59e0b,color:#78350f
+  classDef tnnn fill:#d1fae5,stroke:#10b981,color:#064e3b
+  classDef maaling fill:#ede9fe,stroke:#8b5cf6,color:#4c1d95
+  classDef tm fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+
+  class F1,F2,F3 fang
+  class F4,G1,G2,G3,G4 gate
+  class F5,F6 tnnn
+  class F7,F8,F9,K1,K2,K3 maaling
+  class TM tm
+</pre>
+</div>
+
+<h2>Fase-anker (tekst)</h2>
+
+<div class="fase-card fase-1">
+  <div class="fase-label">Fase 1</div>
+  <div class="fase-title">FANG</div>
+  <div class="fase-body">
+    <p>SK fanges på sketchboardet med status <span class="ref">new</span>. Krav: titel + desc. Fri prosa eller 6-trins-format (T-175 forslag). Plan-tilhørs valgfri på dette niveau.</p>
+    <p><strong>Output:</strong> SK-NNN på <span class="ref">sketchboard-data.json</span>.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-2">
+  <div class="fase-label">Fase 2</div>
+  <div class="fase-title">PRA Fase 1 — én side kendt</div>
+  <div class="fase-body">
+    <p>Per dogfood-strategy §3: én side af PRA-data identificeret. Den anden side default Medium.</p>
+    <ul>
+      <li><strong>chance_of_failure</strong> = chance_of_defects × frequency_of_use</li>
+      <li><strong>damage</strong> = very low / low / moderate / high</li>
+    </ul>
+    <p>Plan-tilhørs påkrævet: <strong>Meta</strong> / <strong>Beslutninger</strong> / <strong>Tasks</strong> / <strong>Produkter</strong>.</p>
+    <p><strong>Output:</strong> sketch får felter <span class="ref">plan</span>, <span class="ref">pra_phase: 1</span>, og enten <span class="ref">chance</span> eller <span class="ref">damage</span>.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-3">
+  <div class="fase-label">Fase 3</div>
+  <div class="fase-title">PRA Fase 2 — begge sider → Risk Class</div>
+  <div class="fase-body">
+    <p>Risk = Chance × Damage → Risk Class:</p>
+    <table>
+      <tr><th>Risk Class</th><th>Test intensity</th><th>Quality measures (per §4)</th></tr>
+      <tr><td><strong>A (høj)</strong></td><td>Intensiv</td><td>Multiple coverage groups; auto-svigt-tæller; pre-action-checklist obligatorisk; sync-verify</td></tr>
+      <tr><td><strong>B (moderat)</strong></td><td>Moderat</td><td>1-2 coverage groups; spot-check; svigt-tæller når mønster gentages</td></tr>
+      <tr><td><strong>C (lav)</strong></td><td>Let</td><td>Single coverage group; observation; ingen formel tæller</td></tr>
+    </table>
+    <p>Quality characteristic identificeres per §3.5: Functionality / Maintainability / Reliability / Security / Performance / Usability.</p>
+    <p><strong>Output:</strong> <span class="ref">pra_phase: 2</span>, <span class="ref">risk_class</span>, <span class="ref">quality_characteristic</span>. Status: promotion-ready.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-4">
+  <div class="fase-label">Fase 4</div>
+  <div class="fase-title">DECISION GATES (§4.5)</div>
+  <div class="fase-body">
+    <p>Tjek i rækkefølge — hver gate skal være OK før næste.</p>
+    <table>
+      <tr><th>Gate</th><th>Spørgsmål</th><th>Hvis fejl: Take measure</th></tr>
+      <tr><td><strong>1. Data-grundlag</strong></td><td>Tæller / baseline / dispatch der støtter?</td><td>Etabler tæller; én-shot self-eval; bed Christian om dokumentation</td></tr>
+      <tr><td><strong>2. Skill</strong></td><td>Quality i qualities.md eller knowsoft tilgængelig?</td><td>Skab knowsoft via T-119 trin 1; reducer intensity; bed om hjælp eksplicit</td></tr>
+      <tr><td><strong>3. Effort</strong></td><td>Proportional til arbejds-omfang (T-104 / WSJF / time-budget)?</td><td>Reducer intensity; pairwise i stedet for fuld; udskyd til næste cadence</td></tr>
+      <tr><td><strong>4. Mandat</strong></td><td>Christian godkendt scope-påvirkning?</td><td>T-119 trin 2 venter; flag som forslag; afvent mandat</td></tr>
+    </table>
+    <p>Hvis nogen gate fejler → take measure → tilbage til Fase 2 (re-PRA om nødvendigt).</p>
+    <p><strong>Output:</strong> <span class="ref">gates_status: ok</span> eller <span class="ref">blocked-on-{gate}</span>.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-5">
+  <div class="fase-label">Fase 5</div>
+  <div class="fase-title">PROMOTION til T-NNN trin 1</div>
+  <div class="fase-body">
+    <p>Forslag-row tilføjes til <span class="ref">tasks-master.md</span> som <span class="ref">Forslag — ikke aktivt (T-119 trin 1)</span>. SK-status opdateres til <span class="ref">promoted</span> med reference til T-NNN.</p>
+    <p><strong>Krav:</strong> Fase 3 + Fase 4 alle OK.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-6">
+  <div class="fase-label">Fase 6</div>
+  <div class="fase-title">Christian-mandat (T-119 trin 2)</div>
+  <div class="fase-body">
+    <p>Mandat-godkendelse fra Christian. T-NNN-status skifter til <span class="ref">Aktiv stående regel (T-119 trin 2)</span>. Test-periode start.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-7">
+  <div class="fase-label">Fase 7</div>
+  <div class="fase-title">Test-periode</div>
+  <div class="fase-body">
+    <p>7-30 dage med svigt-tæller-overvågning + dogfood-anvendelse. Memory.md læseguide-tæller etableres. Bug-board overvåger via T-166.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-8">
+  <div class="fase-label">Fase 8</div>
+  <div class="fase-title">Måling (§6 LEAN-loop)</div>
+  <div class="fase-body">
+    <p>Pattern-mining 28/6 + svigt-tæller-resultat. Kaizen-cyklus: fang → klassificér → tærskel (T-166: 3/7) → modgift → måling → strategi-justering.</p>
+  </div>
+</div>
+
+<div class="fase-card fase-9">
+  <div class="fase-label">Fase 9</div>
+  <div class="fase-title">KONSEKVENS — tre veje</div>
+  <div class="fase-body">
+    <ul>
+      <li><strong>Trin 3</strong> — auto-opgave / sprite. Reglen kører selvstændigt uden Marcus-inde-over hver iteration.</li>
+      <li><strong>Rollback</strong> — anomaly fanget, T-NNN rolled back. Tilbage til Fase 2 med ny PRA hvis ny vinkel.</li>
+      <li><strong>Iteration</strong> — ny vinkel, ny test-periode. Fortsætter via Fase 7.</li>
+    </ul>
+  </div>
+</div>
+
+<h2>Hvad er nyt vs nuværende implicit pipeline</h2>
+<table>
+  <tr><th>Element</th><th>Før</th><th>Nu</th></tr>
+  <tr><td>PRA Fase 1+2</td><td>Implicit / ad-hoc</td><td>Eksplicit fase med felter på SK-NNN</td></tr>
+  <tr><td>Decision gates</td><td>Mental konsultation</td><td>4 tjek dokumenteret som gates_status</td></tr>
+  <tr><td>Take measures</td><td>Ad-hoc</td><td>Eksplicit loop tilbage til Fase 2</td></tr>
+  <tr><td>Promotion-krav</td><td>Christian-mandat alene</td><td>Fase 3 + Fase 4 OK FØR T-NNN trin 1</td></tr>
+</table>
+
+<div class="meta-block">
+  <strong>Default-læs ved session-start:</strong> Denne fil er obligatorisk Trin 1-læs i <span class="ref">cowork-pulse-procedure.md</span>. Calibration: High kræver pipeline-overview er læst som del af session-load. Reference-anker for SK→T-NNN-promotion-disciplin per T-NNN-kandidat fra <span class="ref">knowsofts/sketch-to-task-promotion.md</span>.
+  <br><br>
+  <strong>Knytter:</strong> dogfood-test-strategy.md §3 / §3.5 / §4 / §4.5 / §6 · van der Aalst (2008) "Test design techniques were not invented to bully testers" · T-119 (selv-mandaterings-protokol) · T-166 (svigt-tærskel-eskalering) · T-176 (SK-schema-evolution — PRA-felter) · T-105/T-167/T-168 (build-pipelines).
+</div>
+
+<script>
+  mermaid.initialize({ startOnLoad: true, securityLevel: 'strict', theme: 'default', flowchart: { curve: 'basis' } });
+</script>
+
+</body>
+</html>

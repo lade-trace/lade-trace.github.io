@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="da">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marcus · facework</title>
+<style>
+:root{
+  --bg:#0f1115;--surface:#171a21;--border:#2a2f3a;
+  --text:#e5e7eb;--muted:#9aa3b2;
+  --ok:#6ee7b7;--warn:#fbbf24;--bad:#f87171;--info:#7dd3fc;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;background:var(--bg);color:var(--text);font:16px/1.6 system-ui,sans-serif}
+body{display:flex;flex-direction:column;min-height:100vh}
+
+.badge{
+  position:fixed;top:16px;left:50%;transform:translateX(-50%);
+  font-size:11px;letter-spacing:.06em;color:var(--muted);
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:999px;padding:3px 12px;z-index:10;white-space:nowrap;
+}
+
+.face{
+  flex:1;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:32px;padding:80px 24px 24px;
+}
+
+.orb-wrap{display:flex;flex-direction:column;align-items:center;gap:12px}
+
+.orb{
+  width:52px;height:52px;border-radius:50%;
+  background:var(--muted);
+  transition:background .5s ease,opacity .5s ease;
+  position:relative;
+}
+.orb::before{
+  content:'';position:absolute;inset:-8px;border-radius:50%;
+  border:1px solid transparent;
+  transition:border-color .5s ease;
+}
+
+.s-stille .orb{background:var(--muted);opacity:.35;animation:ps 3s ease-in-out infinite}
+.s-lytter .orb{background:var(--ok);opacity:.75;animation:pl 1.2s ease-in-out infinite}
+.s-lytter .orb::before{border-color:var(--ok);animation:ring 1.2s ease-in-out infinite}
+.s-taenker .orb{background:var(--info);opacity:.85;animation:pt .9s ease-in-out infinite}
+.s-taenker .orb::before{border-color:var(--info);animation:ring .9s ease-in-out infinite}
+.s-taler .orb{background:var(--text);opacity:1;animation:pk .45s ease-in-out infinite}
+.s-pause .orb{background:var(--warn);opacity:.5}
+
+@keyframes ps{0%,100%{transform:scale(1);opacity:.3}50%{transform:scale(1.1);opacity:.45}}
+@keyframes pl{0%,100%{transform:scale(1)}50%{transform:scale(1.07)}}
+@keyframes pt{0%,100%{transform:scale(1)}50%{transform:scale(1.14)}}
+@keyframes pk{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+@keyframes ring{0%{transform:scale(1);opacity:.35}100%{transform:scale(2.1);opacity:0}}
+
+.state-label{
+  font-size:11px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);transition:color .4s ease;
+}
+.s-lytter .state-label{color:var(--ok)}
+.s-taenker .state-label{color:var(--info)}
+.s-taler .state-label{color:var(--text)}
+.s-pause .state-label{color:var(--warn)}
+
+.speech{max-width:540px;width:100%;text-align:center}
+
+.user-line{
+  font-size:14px;color:var(--muted);font-style:italic;
+  margin-bottom:20px;min-height:22px;
+  opacity:0;transition:opacity .5s ease;
+}
+.user-line.vis{opacity:1}
+
+.marcus-text{
+  font-size:22px;font-weight:300;line-height:1.55;
+  min-height:110px;color:var(--text);
+  transition:opacity .3s ease;
+  white-space:pre-wrap;
+}
+.marcus-text.dim{opacity:.2}
+
+.cursor{
+  display:inline-block;width:2px;height:.92em;
+  background:var(--ok);vertical-align:text-bottom;
+  margin-left:2px;animation:blink .8s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+.cards{
+  position:fixed;right:20px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:8px;width:168px;
+}
+.card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:10px 12px;font-size:12px;
+  transform:translateX(210px);opacity:0;
+  transition:transform .4s cubic-bezier(.25,.8,.25,1),opacity .35s ease;
+}
+.card.vis{transform:translateX(0);opacity:1}
+.card .k{color:var(--muted);font-size:11px;margin-bottom:2px}
+.card .v{font-weight:500}
+.card .v.ok{color:var(--ok)}
+.card .v.info{color:var(--info)}
+
+.bar{
+  padding:14px 20px;border-top:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:var(--surface);flex-shrink:0;
+}
+.controls{display:flex;gap:6px}
+.btn{
+  font:13px system-ui;background:transparent;color:var(--text);
+  border:1px solid var(--border);border-radius:8px;
+  padding:6px 14px;cursor:pointer;transition:border-color .2s;
+}
+.btn:hover{border-color:var(--muted)}
+.btn.active{background:var(--ok);color:#03242e;border-color:var(--ok);font-weight:600}
+.step{font-size:12px;color:var(--muted)}
+.link{
+  font-size:12px;color:var(--muted);text-decoration:none;
+  border:1px solid var(--border);border-radius:6px;padding:5px 10px;
+  transition:color .2s,border-color .2s;
+}
+.link:hover{color:var(--text);border-color:var(--muted)}
+
+@media(max-width:640px){
+  .cards{display:none}
+  .marcus-text{font-size:18px}
+  .badge{font-size:10px;padding:2px 8px}
+}
+</style>
+</head>
+<body>
+
+<div class="badge" id="badge">SK-133 · facework-prototype · demo</div>
+
+<div class="face s-stille" id="face">
+  <div class="orb-wrap">
+    <div class="orb"></div>
+    <div class="state-label" id="slabel">stille</div>
+  </div>
+  <div class="speech">
+    <div class="user-line" id="uline"></div>
+    <div class="marcus-text" id="mtext"></div>
+  </div>
+</div>
+
+<div class="cards">
+  <div class="card" id="c-decay">
+    <div class="k">decay</div>
+    <div class="v ok" id="c-decay-v">fresh</div>
+  </div>
+  <div class="card" id="c-cal">
+    <div class="k">calibration</div>
+    <div class="v info" id="c-cal-v">Medium</div>
+  </div>
+  <div class="card" id="c-board">
+    <div class="k">board</div>
+    <div class="v" id="c-board-v">tasks · 20 åbne</div>
+  </div>
+</div>
+
+<div class="bar">
+  <div class="controls">
+    <button class="btn" id="bprev" aria-label="Forrige">←</button>
+    <button class="btn active" id="bplay">▶ Afspil</button>
+    <button class="btn" id="bnext" aria-label="Næste">→</button>
+  </div>
+  <span class="step" id="step">1 / 7</span>
+  <a href="../boards/marcus-face/marcus-face.html" class="link">boards → anatomi</a>
+</div>
+
+<script>
+(function(){
+var face=document.getElementById('face');
+var slabel=document.getElementById('slabel');
+var uline=document.getElementById('uline');
+var mtext=document.getElementById('mtext');
+var step=document.getElementById('step');
+var bplay=document.getElementById('bplay');
+var bprev=document.getElementById('bprev');
+var bnext=document.getElementById('bnext');
+var cards={decay:document.getElementById('c-decay'),cal:document.getElementById('c-cal'),board:document.getElementById('c-board')};
+
+var STATES=['stille','lytter','taenker','taler','pause'];
+var LABELS={stille:'stille',lytter:'lytter',taenker:'tænker',taler:'taler',pause:'pause'};
+
+var SCRIPT=[
+  {state:'stille',user:'',text:'',show:[],dur:2500},
+  {state:'lytter',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay'],dur:2200},
+  {state:'taenker',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay','cal'],dur:1900},
+  {state:'taler',user:'"Hvad er vigtigst i dag?"',
+   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.',
+   show:['decay','cal','board'],dur:4800},
+  {state:'pause',user:'"Hvad er vigtigst i dag?"',
+   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.',
+   show:['decay','board'],dur:1900},
+  {state:'taler',user:'"Hvad er vigtigst i dag?"',
+   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.\n\nResten er backlog.',
+   show:['board'],dur:3200},
+  {state:'stille',user:'',
+   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.\n\nResten er backlog.',
+   show:[],dur:0},
+];
+
+var cur=0,playing=false,timer=null,typer=null;
+
+function applyState(s){
+  STATES.forEach(function(x){face.classList.remove('s-'+x);});
+  face.classList.add('s-'+s);
+  slabel.textContent=LABELS[s]||s;
+}
+
+function applyCards(show){
+  Object.keys(cards).forEach(function(k){cards[k].classList.remove('vis');});
+  show.forEach(function(k){if(cards[k])cards[k].classList.add('vis');});
+}
+
+function killTyper(){if(typer){clearInterval(typer);typer=null;}}
+
+function typeOut(text){
+  killTyper();
+  mtext.textContent='';
+  if(!text)return;
+  var cursor=document.createElement('span');
+  cursor.className='cursor';
+  mtext.appendChild(cursor);
+  var i=0;
+  typer=setInterval(function(){
+    if(i<text.length){mtext.insertBefore(document.createTextNode(text[i]),cursor);i++;}
+    else{clearInterval(typer);typer=null;cursor.remove();}
+  },26);
+}
+
+function render(idx,animate){
+  var s=SCRIPT[idx];
+  applyState(s.state);
+  applyCards(s.show);
+  step.textContent=(idx+1)+' / '+SCRIPT.length;
+  uline.textContent=s.user;
+  uline.classList.toggle('vis',!!s.user);
+  mtext.classList.remove('dim');
+  if(s.state==='taenker'){
+    killTyper();mtext.textContent=s.text;mtext.classList.add('dim');
+  } else if(animate&&s.state==='taler'){
+    typeOut(s.text);
+  } else {
+    killTyper();mtext.textContent=s.text;
+  }
+}
+
+function stopAuto(){
+  playing=false;
+  if(timer){clearTimeout(timer);timer=null;}
+  if(cur>=SCRIPT.length-1){bplay.textContent='↺ Igen';bplay.className='btn';}
+  else{bplay.textContent='▶ Afspil';bplay.className='btn active';}
+}
+
+function advance(){
+  var dur=SCRIPT[cur].dur||2000;
+  timer=setTimeout(function(){
+    if(cur<SCRIPT.length-1){cur++;render(cur,true);if(playing)advance();}
+    else{stopAuto();}
+  },dur);
+}
+
+function startAuto(){playing=true;bplay.textContent='⏸ Pause';bplay.className='btn active';advance();}
+
+bplay.addEventListener('click',function(){
+  if(playing){stopAuto();}
+  else if(cur>=SCRIPT.length-1){cur=0;render(cur,false);startAuto();}
+  else{startAuto();}
+});
+bprev.addEventListener('click',function(){stopAuto();if(cur>0){cur--;render(cur,false);}});
+bnext.addEventListener('click',function(){stopAuto();if(cur<SCRIPT.length-1){cur++;render(cur,true);}});
+
+render(0,false);
+})();
+</script>
+
+<script>
+(function(){
+var GIST_ID='3746918d37090c31dcab5744f3634646';
+
+if(!GIST_ID)return;
+
+var badge=document.getElementById('badge');
+
+function ago(iso){
+  var m=Math.round((Date.now()-new Date(iso))/60000);
+  if(m<1)return'nu';if(m<60)return m+'m siden';return Math.round(m/60)+'t siden';
+}
+
+function setCard(id,text,cls){
+  var el=document.getElementById(id);if(!el)return;
+  el.textContent=text;el.className='v'+(cls?' '+cls:'');
+}
+
+fetch('https://api.github.com/gists/'+GIST_ID)
+  .then(function(r){return r.json();})
+  .then(function(data){
+    var raw=data.files&&data.files['marcus-state.json'];
+    if(!raw)return;
+    var s=JSON.parse(raw.content);
+
+    var decayTxt=(s.decay||'?')+(s.days_since_interaction!=null?' · '+s.days_since_interaction+'d':'');
+    var decayCls=s.decay==='fresh'?'ok':s.decay==='drifting'?'info':'bad';
+    setCard('c-decay-v',decayTxt,decayCls);
+
+    setCard('c-cal-v',s.calibration_cap||'—','info');
+
+    var n=(s.open&&s.open.tasks_trin1!=null)
+      ?((s.open.tasks_trin1||0)+(s.open.tasks_trin2||0))
+      :null;
+    setCard('c-board-v',n!=null?'tasks · '+n+' åbne':'board','');
+
+    if(badge&&s.generated_at){
+      badge.textContent='SK-133 · live · '+ago(s.generated_at);
+      badge.style.color='var(--ok)';
+    }
+  })
+  .catch(function(){});
+})();
+</script>
+</body>
+</html>
