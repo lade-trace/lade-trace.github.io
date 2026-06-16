@@ -90,6 +90,8 @@ body{display:flex;flex-direction:column;min-height:100vh}
 .sketch-wrap{width:240px;height:150px;opacity:0;transition:opacity .5s ease;flex-shrink:0}
 .sketch-wrap.vis{opacity:1}
 .sketch-wrap svg{width:100%;height:100%;overflow:visible}
+.sketch-wrap.stale{opacity:.4;filter:grayscale(.55)}
+.sketch-wrap.stale svg path,.sketch-wrap.stale svg line,.sketch-wrap.stale svg rect,.sketch-wrap.stale svg circle,.sketch-wrap.stale svg polyline,.sketch-wrap.stale svg ellipse{stroke-dasharray:4 3}
 
 .cards{
   position:fixed;right:20px;top:50%;transform:translateY(-50%);
@@ -137,7 +139,7 @@ body{display:flex;flex-direction:column;min-height:100vh}
 </head>
 <body>
 
-<div class="badge" id="badge">SK-133 · facework-prototype · demo</div>
+<div class="badge" id="badge">SK-133 · henter…</div>
 
 <div class="face s-stille" id="face">
   <div class="orb-wrap">
@@ -156,15 +158,11 @@ body{display:flex;flex-direction:column;min-height:100vh}
 <div class="cards">
   <div class="card" id="c-decay">
     <div class="k">decay</div>
-    <div class="v ok" id="c-decay-v">fresh</div>
-  </div>
-  <div class="card" id="c-cal">
-    <div class="k">calibration</div>
-    <div class="v info" id="c-cal-v">Medium</div>
+    <div class="v" id="c-decay-v">—</div>
   </div>
   <div class="card" id="c-board">
     <div class="k">board</div>
-    <div class="v" id="c-board-v">tasks · 20 åbne</div>
+    <div class="v" id="c-board-v">tasks · —</div>
   </div>
 </div>
 
@@ -188,7 +186,7 @@ var step=document.getElementById('step');
 var bplay=document.getElementById('bplay');
 var bprev=document.getElementById('bprev');
 var bnext=document.getElementById('bnext');
-var cards={decay:document.getElementById('c-decay'),cal:document.getElementById('c-cal'),board:document.getElementById('c-board')};
+var cards={decay:document.getElementById('c-decay'),board:document.getElementById('c-board')};
 var sw=document.getElementById('sketch-wrap');
 var sk=document.getElementById('sketch');
 
@@ -199,26 +197,39 @@ var SVG_LYTTER='<g stroke="currentColor" fill="none" stroke-linecap="round" stro
 
 var SVG_TAENKER='<g stroke="currentColor" fill="none" stroke-linecap="round"><circle cx="44" cy="94" r="10" stroke-width="2.5"/><line x1="44" y1="104" x2="44" y2="132" stroke-width="2.5"/><line x1="44" y1="115" x2="34" y2="126" stroke-width="2"/><line x1="44" y1="115" x2="54" y2="126" stroke-width="2"/><circle cx="63" cy="79" r="3" fill="currentColor" stroke="none"/><circle cx="76" cy="66" r="4" fill="currentColor" stroke="none"/><rect x="84" y="10" width="136" height="60" rx="30" stroke-width="2" fill="var(--surface)"/><ellipse cx="96" cy="66" rx="12" ry="7" stroke-width="2" fill="var(--surface)"/><circle cx="120" cy="40" r="5.5" fill="var(--info)" stroke="none"/><circle cx="152" cy="34" r="5.5" fill="var(--info)" stroke="none"/><circle cx="184" cy="40" r="5.5" fill="var(--info)" stroke="none"/></g>';
 
-var SVG_FILER='<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="44" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="11" y="35" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="16" y="26" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="21" y="17" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="26" y="8" width="36" height="44" rx="2" stroke-width="2.5" fill="var(--bg)"/><path d="M50,8 L62,20 L50,20 Z" stroke-width="1.5" fill="var(--surface)"/><text x="44" y="32" font-size="13" font-weight="bold" text-anchor="middle" fill="var(--ok)" stroke="none" font-family="system-ui">5</text><text x="44" y="64" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">uncommitted</text><line x1="76" y1="55" x2="94" y2="55" stroke="var(--muted)" stroke-width="1.5"/><polyline points="91,51 97,55 91,59" stroke="var(--muted)" stroke-width="1.5" fill="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2"/><path d="M105,18 Q102,18 102,21 L102,30 L154,30 L154,21 Q154,18 151,18 Z" fill="var(--warn)" stroke="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2" fill="none"/><line x1="116" y1="13" x2="116" y2="24" stroke-width="2.5"/><line x1="140" y1="13" x2="140" y2="24" stroke-width="2.5"/><text x="128" y="52" font-size="17" font-weight="bold" text-anchor="middle" fill="var(--text)" stroke="none" font-family="system-ui">2d</text><text x="128" y="63" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">backup</text></g>';
+function svgFiler(){
+  var known=LIVE.loaded&&LIVE.uncKnown;
+  var n=known?String(LIVE.uncCount):'?';
+  var nfill=(known&&LIVE.uncCount>0)?'var(--warn)':'var(--muted)';
+  var lbl=!LIVE.loaded?'commit':(known?(LIVE.uncCount===0?'committet':'uncommitted'):'ukendt');
+  var b=(LIVE.loaded&&LIVE.backupDays!=null)?LIVE.backupDays+'d':'–';
+  return '<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="44" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="11" y="35" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="16" y="26" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="21" y="17" width="36" height="44" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="26" y="8" width="36" height="44" rx="2" stroke-width="2.5" fill="var(--bg)"/><path d="M50,8 L62,20 L50,20 Z" stroke-width="1.5" fill="var(--surface)"/><text x="44" y="32" font-size="13" font-weight="bold" text-anchor="middle" fill="'+nfill+'" stroke="none" font-family="system-ui">'+n+'</text><text x="44" y="64" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">'+lbl+'</text><line x1="76" y1="55" x2="94" y2="55" stroke="var(--muted)" stroke-width="1.5"/><polyline points="91,51 97,55 91,59" stroke="var(--muted)" stroke-width="1.5" fill="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2"/><path d="M105,18 Q102,18 102,21 L102,30 L154,30 L154,21 Q154,18 151,18 Z" fill="var(--warn)" stroke="none"/><rect x="102" y="18" width="52" height="48" rx="3" stroke-width="2" fill="none"/><line x1="116" y1="13" x2="116" y2="24" stroke-width="2.5"/><line x1="140" y1="13" x2="140" y2="24" stroke-width="2.5"/><text x="128" y="52" font-size="17" font-weight="bold" text-anchor="middle" fill="var(--text)" stroke="none" font-family="system-ui">'+b+'</text><text x="128" y="63" font-size="8" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">backup</text></g>';
+}
 
 var SVG_BACKLOG='<g stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="20" y="82" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="64" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="46" width="62" height="15" rx="2" stroke-width="1.5" fill="var(--surface)"/><rect x="20" y="28" width="62" height="15" rx="2" stroke-width="2.5" fill="var(--bg)"/><text x="51" y="40" font-size="9" font-weight="600" text-anchor="middle" fill="var(--muted)" stroke="none" font-family="system-ui">BACKLOG</text><line x1="96" y1="24" x2="96" y2="102" stroke="var(--border)" stroke-width="1.5" stroke-dasharray="5,4"/><line x1="110" y1="64" x2="202" y2="46" stroke="var(--ok)" stroke-width="3"/><polyline points="191,38 204,44 196,53" stroke="var(--ok)" stroke-width="3" fill="none" stroke-linejoin="round"/><text x="166" y="38" font-size="9" text-anchor="middle" fill="var(--ok)" stroke="none" font-family="system-ui">→ later</text></g>';
+
+var LIVE={loaded:false,stale:false,ageDays:null,uncKnown:false,uncCount:null,backupDays:null,backlog:null};
+
+function talerText(withBacklog){
+  if(!LIVE.loaded) return 'Henter min tilstand…';
+  var bak=LIVE.backupDays!=null?(LIVE.backupDays===1?'én dag':LIVE.backupDays+' dage'):'? dage';
+  var main;
+  if(!LIVE.uncKnown) main='Commit-tilstanden kan jeg ikke aflæse lige nu (kilden mangler). Backup-bundlen er '+bak+' gammel.';
+  else if(LIVE.uncCount===0) main='Alt er committet. Backup-bundlen er '+bak+' gammel.';
+  else main='Der er ucommittede ændringer ('+LIVE.uncCount+'/2 git-træer). Backup-bundlen er '+bak+' gammel.';
+  if(withBacklog) main+='\n\nResten er backlog'+(LIVE.backlog!=null?' ('+LIVE.backlog+' ting)':'')+'.';
+  if(LIVE.stale) main+='\n\n(øjebliksbillede ~'+LIVE.ageDays+'d gammelt)';
+  return main;
+}
 
 var SCRIPT=[
   {state:'stille',user:'',text:'',show:[],dur:2500,svg:null},
   {state:'lytter',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay'],dur:2200,svg:SVG_LYTTER},
-  {state:'taenker',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay','cal'],dur:1900,svg:SVG_TAENKER},
-  {state:'taler',user:'"Hvad er vigtigst i dag?"',
-   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.',
-   show:['decay','cal','board'],dur:4800,svg:SVG_FILER},
-  {state:'pause',user:'"Hvad er vigtigst i dag?"',
-   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.',
-   show:['decay','board'],dur:1900,svg:SVG_FILER},
-  {state:'taler',user:'"Hvad er vigtigst i dag?"',
-   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.\n\nResten er backlog.',
-   show:['board'],dur:3200,svg:SVG_BACKLOG},
-  {state:'stille',user:'',
-   text:'D: har fem uncommittede filer og backup-bundlen er to dage gammel.\n\nResten er backlog.',
-   show:[],dur:0,svg:null},
+  {state:'taenker',user:'"Hvad er vigtigst i dag?"',text:'',show:['decay'],dur:1900,svg:SVG_TAENKER},
+  {state:'taler',user:'"Hvad er vigtigst i dag?"',live:true,show:['decay','board'],dur:4800,svg:svgFiler},
+  {state:'pause',user:'"Hvad er vigtigst i dag?"',live:true,show:['decay','board'],dur:1900,svg:svgFiler},
+  {state:'taler',user:'"Hvad er vigtigst i dag?"',live:true,bl:true,show:['board'],dur:3200,svg:SVG_BACKLOG},
+  {state:'stille',user:'',live:true,bl:true,show:[],dur:0,svg:null},
 ];
 
 var cur=0,playing=false,timer=null,typer=null;
@@ -254,18 +265,21 @@ function render(idx,animate){
   var s=SCRIPT[idx];
   applyState(s.state);
   applyCards(s.show);
-  if(s.svg){sk.innerHTML=s.svg;sw.classList.add('vis');}
+  var svgContent=(typeof s.svg==='function')?s.svg():s.svg;
+  if(svgContent){sk.innerHTML=svgContent;sw.classList.add('vis');}
   else{sk.innerHTML='';sw.classList.remove('vis');}
+  sw.classList.toggle('stale',!!(LIVE.loaded&&LIVE.stale&&svgContent));
   step.textContent=(idx+1)+' / '+SCRIPT.length;
   uline.textContent=s.user;
   uline.classList.toggle('vis',!!s.user);
   mtext.classList.remove('dim');
+  var txt=s.live?talerText(!!s.bl):s.text;
   if(s.state==='taenker'){
-    killTyper();mtext.textContent=s.text;mtext.classList.add('dim');
+    killTyper();mtext.textContent=txt;mtext.classList.add('dim');
   } else if(animate&&s.state==='taler'){
-    typeOut(s.text);
+    typeOut(txt);
   } else {
-    killTyper();mtext.textContent=s.text;
+    killTyper();mtext.textContent=txt;
   }
 }
 
@@ -294,6 +308,7 @@ bplay.addEventListener('click',function(){
 bprev.addEventListener('click',function(){stopAuto();if(cur>0){cur--;render(cur,false);}});
 bnext.addEventListener('click',function(){stopAuto();if(cur<SCRIPT.length-1){cur++;render(cur,true);}});
 
+window.__faceworkApplyLive=function(live){for(var k in live){LIVE[k]=live[k];}LIVE.loaded=true;render(cur,false);};
 render(0,false);
 })();
 </script>
@@ -308,7 +323,9 @@ var badge=document.getElementById('badge');
 
 function ago(iso){
   var m=Math.round((Date.now()-new Date(iso))/60000);
-  if(m<1)return'nu';if(m<60)return m+'m siden';return Math.round(m/60)+'t siden';
+  if(m<1)return'nu';if(m<60)return m+'m siden';
+  if(m<1440)return Math.round(m/60)+'t siden';
+  return Math.round(m/1440)+'d siden';
 }
 
 function setCard(id,text,cls){
@@ -320,26 +337,47 @@ fetch('https://api.github.com/gists/'+GIST_ID)
   .then(function(r){return r.json();})
   .then(function(data){
     var raw=data.files&&data.files['marcus-state.json'];
-    if(!raw)return;
+    if(!raw)throw new Error('no state');
     var s=JSON.parse(raw.content);
+
+    // uncommitted: dirty.{d,c} is structurally broken upstream — push-facework-state.mjs coerces an
+    // INTEGER count with `=== true`, so the Gist always publishes boolean false (NOT "0 = clean").
+    // Only trust it once push publishes real numeric counts; until then show NO-DATA (never a fake "committet").
+    var dv=s.dirty||{};
+    var dNum=(typeof dv.d==='number'),cNum=(typeof dv.c==='number');
+    var uncKnown=dNum||cNum;
+    var uncCount=uncKnown?(((dNum?dv.d:0)>0?1:0)+((cNum?dv.c:0)>0?1:0)):null;
+    var backupDays=(s.backup_age_days!=null)?Math.round(s.backup_age_days):null;
+    var backlog=(s.open&&s.open.tasks_trin1!=null)?((s.open.tasks_trin1||0)+(s.open.tasks_trin2||0)):null;
+
+    // staleness from generated_at (canonical fresh threshold = 2 days / 48h)
+    var ageH=s.generated_at?((Date.now()-new Date(s.generated_at))/3600000):null;
+    var stale=(ageH!=null)&&(ageH>48);
 
     var decayTxt=(s.decay||'?')+(s.days_since_interaction!=null?' · '+s.days_since_interaction+'d':'');
     var decayCls=s.decay==='fresh'?'ok':s.decay==='drifting'?'info':'bad';
     setCard('c-decay-v',decayTxt,decayCls);
 
-    setCard('c-cal-v',s.calibration_cap||'—','info');
+    // calibration_cap is per-session, NOT a disk fact -> not shown as a live card
 
-    var n=(s.open&&s.open.tasks_trin1!=null)
-      ?((s.open.tasks_trin1||0)+(s.open.tasks_trin2||0))
-      :null;
-    setCard('c-board-v',n!=null?'tasks · '+n+' åbne':'board','');
+    setCard('c-board-v',backlog!=null?'tasks · '+backlog+' åbne':'tasks · —','');
+
+    // feed sketch + narration; the demo engine owns rendering so values survive re-renders
+    if(window.__faceworkApplyLive){
+      window.__faceworkApplyLive({
+        uncKnown:uncKnown,uncCount:uncCount,backupDays:backupDays,backlog:backlog,
+        stale:stale,ageDays:(ageH!=null?Math.max(1,Math.round(ageH/24)):null)
+      });
+    }
 
     if(badge&&s.generated_at){
-      badge.textContent='SK-133 · live · '+ago(s.generated_at);
-      badge.style.color='var(--ok)';
+      badge.textContent='SK-133 · '+(stale?'stale':'live')+' · '+ago(s.generated_at);
+      badge.style.color=stale?'var(--bad)':'var(--ok)';
     }
   })
-  .catch(function(){});
+  .catch(function(){
+    if(badge){badge.textContent='SK-133 · offline';badge.style.color='var(--bad)';}
+  });
 })();
 </script>
 </body>
