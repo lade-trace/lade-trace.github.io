@@ -18,15 +18,10 @@ iframe{flex:1;width:100%;border:0;background:var(--bg)}
 <header>
   <strong>Marcus · cockpit</strong>
   <span class="note">facework = mødet · dashboards = anatomi</span>
-  <span class="note" title="Calibration optjenes per session via ægte læsning + recognition-remse — aldrig en filværdi. Vises i Grounding-fanen.">calibration · per session (se Grounding)</span>
-  <span class="note">bygget 2026-06-15 23:04</span>
+  <span class="note">kontrol · demo-mode</span>
 </header>
-<div class="tabs"><button data-tab="grounding" class="active">Grounding</button><button data-tab="gate">Gate-status</button><button data-tab="boards">Boards</button><button data-tab="floor">Floor-log</button><button data-tab="control">Kontrol</button></div>
-<main><section class="view active" id="v-grounding"><div class="bar"><span class="desc">sandhed-at-a-glance: health · proof · dirty · readiness · blockers</span><a href="../grounding-panel/grounding-panel.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../grounding-panel/grounding-panel.html" title="Grounding"></iframe></section>
-<section class="view" id="v-gate"><div class="bar"><span class="desc">per-regel gate-resultater + ægte-mtime staleness-vagt</span><a href="../gate-status/gate-status.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../gate-status/gate-status.html" title="Gate-status"></iframe></section>
-<section class="view" id="v-boards"><div class="bar"><span class="desc">tasks · regler · bugs · sketches</span><a href="../boards-dashboard/boards-dashboard.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../boards-dashboard/boards-dashboard.html" title="Boards"></iframe></section>
-<section class="view" id="v-floor"><div class="bar"><span class="desc">multi-skär coordination — floor-holder + NOTE-timeline</span><a href="../floor-log/floor-log.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../floor-log/floor-log.html" title="Floor-log"></iframe></section>
-<section class="view" id="v-control"><div class="bar"><span class="desc">læse-/idempotent kontrol-panel — classifier-gated ét-klik</span><a href="../control-panel/control-panel.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../control-panel/control-panel.html" title="Kontrol"></iframe></section></main>
+<div class="tabs"><button data-tab="control" class="active">Kontrol</button></div>
+<main><section class="view active" id="v-control"><div class="bar"><span class="desc">læse-/idempotent kontrol-panel — classifier-gated ét-klik</span><a href="../control-panel/control-panel.html" target="_blank" rel="noopener">åbn i ny fane ↗ (hvis rammen er tom)</a></div><iframe src="../control-panel/control-panel.html" title="Kontrol"></iframe></section></main>
 <script>
 document.querySelector('.tabs').addEventListener('click',function(e){var b=e.target.closest('button');if(!b)return;
   document.querySelectorAll('.tabs button').forEach(x=>x.classList.remove('active'));b.classList.add('active');
