@@ -1,0 +1,70 @@
+<!doctype html><html lang="da"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Marcus · kontrol</title>
+<style>
+:root{--bg:#0f1115;--surface:#171a21;--border:#2a2f3a;--text:#e5e7eb;--muted:#9aa3b2;--ok:#6ee7b7;--bad:#f87171;--accent:#7dd3fc}
+@media(prefers-color-scheme:light){:root{--bg:#fff;--surface:#f5f6f8;--border:#e2e4e9;--text:#1a1d23;--muted:#5f6672}}
+*{box-sizing:border-box}body{margin:0;font:14px/1.5 system-ui,sans-serif;background:var(--bg);color:var(--text)}
+header{padding:12px 16px;border-bottom:1px solid var(--border)}header strong{font-size:16px}
+header .note{font-size:11px;color:var(--muted);margin-top:2px}
+main{padding:12px 16px;display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.act{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:10px}
+.act button{font:13px system-ui;background:var(--accent);color:#03242e;border:0;border-radius:8px;padding:7px 12px;cursor:pointer;font-weight:600}
+.meta{margin-top:6px;font-size:11px;color:var(--muted);display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.badge{padding:0 6px;border-radius:6px;border:1px solid var(--border)}.badge.ok{color:var(--ok);border-color:var(--ok)}
+code{font-size:11px}.desc{font-size:12px;color:var(--muted);margin-top:4px}
+#out{margin:0 16px 16px;background:#0a0c10;border:1px solid var(--border);border-radius:8px;padding:10px;font:12px/1.45 ui-monospace,monospace;white-space:pre-wrap;max-height:340px;overflow:auto;color:var(--text)}
+.warn{margin:8px 16px;font-size:12px;color:var(--muted);border-left:3px solid var(--accent);padding-left:8px}
+</style></head><body>
+<header>
+  <strong>Marcus · kontrol</strong>
+  <div class="note">kun læse-/idempotente handlinger · dobbelt-gated (fixed registry + classifier-free) · ét-klik harmløst at gen-køre</div>
+</header>
+<div class="warn">Demo-tilstand: knapperne viser hvad der ville ske. Faktisk udførelse kræver lokal server — <code>node tools/serve-cockpit.mjs</code> fra home-node/.</div>
+<main><div class="act">
+    <button data-action="verify-gate">Traceability-gate</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/verify-traceability.mjs --gate</code></div>
+    <div class="desc">kør gate-subset (0 TEST-FAIL forventet)</div>
+  </div>
+<div class="act">
+    <button data-action="verify-all">Traceability (alle)</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/verify-traceability.mjs --all</code></div>
+    <div class="desc">fuld traceability-kørsel + proof-completeness</div>
+  </div>
+<div class="act">
+    <button data-action="rebuild-cockpit">Genbyg cockpit</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/build-cockpit.mjs</code></div>
+    <div class="desc">genbyg alle paneler + marcus-face-shell</div>
+  </div>
+<div class="act">
+    <button data-action="regen-context">Regen activation-bundle</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/gen-current-context.mjs</code></div>
+    <div class="desc">gen-current-context (runtime/current-context.json)</div>
+  </div>
+<div class="act">
+    <button data-action="regen-index">Regen capability-index</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/build-capability-index.mjs</code></div>
+    <div class="desc">genregenér knowsofts/capability-index.md</div>
+  </div>
+<div class="act">
+    <button data-action="health">Marcus-health (stoplys)</button>
+    <div class="meta"><span class="badge ok">free/none</span> <code>node tools/marcus-health.mjs</code></div>
+    <div class="desc">health-stoplys</div>
+  </div></main>
+<pre id="out">(klik en knap for at se kommandoen — udførelse sker lokalt)</pre>
+<script>
+const CMDS = {
+  'verify-gate':    'node tools/verify-traceability.mjs --gate',
+  'verify-all':     'node tools/verify-traceability.mjs --all',
+  'rebuild-cockpit':'node tools/build-cockpit.mjs',
+  'regen-context':  'node tools/gen-current-context.mjs',
+  'regen-index':    'node tools/build-capability-index.mjs',
+  'health':         'node tools/marcus-health.mjs'
+};
+document.querySelector('main').addEventListener('click',function(e){
+  var b=e.target.closest('button[data-action]'); if(!b)return;
+  var out=document.getElementById('out');
+  var cmd=CMDS[b.dataset.action]||b.dataset.action;
+  out.textContent='[demo] Kørte lokalt:\n\n  '+cmd+'\n\nStart serveren for faktisk udførelse:\n  node tools/serve-cockpit.mjs';
+});
+</script>
+</body></html>
